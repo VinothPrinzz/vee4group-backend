@@ -93,7 +93,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Connect to MongoDB
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/vee4_order_management', {
+mongoose.connect(process.env.MONGODB_URI || 'mongodb+srv://vinothprinzz:Password@123@cluster0.dpx88u6.mongodb.net/vee4_order_management?retryWrites=true&w=majority', {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 })
