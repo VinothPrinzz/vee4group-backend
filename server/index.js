@@ -98,7 +98,7 @@ mongoose.connect(process.env.MONGODB_URI || 'mongodb+srv://vinothprinzz:Password
   useUnifiedTopology: true,
 })
   .then(() => console.log('Connected to MongoDB'))
-  .catch(err => console.log(process.env.MONGODB_URI));
+  .catch(err => console.error('MongoDB connection error:', err));
 
 // Routes
 app.use('/api/v1/auth', authRoutes);
