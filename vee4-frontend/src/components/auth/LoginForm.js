@@ -1,6 +1,7 @@
 // src/components/auth/LoginForm.js
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { authService } from '../../services/api';
 import Card from '../ui/Card';
 import Button from '../ui/Button';
@@ -96,9 +97,7 @@ const LoginForm = () => {
           
           <div style={{ textAlign: 'center', marginTop: '1rem' }}>
             Don't have an account?{' '}
-            <a href="/register" className="auth-link">
-              Register now
-            </a>
+            <Link to="/register" className="auth-link">Register now</Link>
           </div>
         </form>
       </Card>
