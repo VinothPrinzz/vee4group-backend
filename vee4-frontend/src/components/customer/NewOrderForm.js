@@ -49,6 +49,14 @@ const NewOrderForm = () => {
   
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    console.log("Form data being submitted:", formData);
+    if (formData.designFile) {
+    console.log("File type:", formData.designFile.type);
+    console.log("File size:", formData.designFile.size);
+    } else {
+      console.log("No file selected");
+    }
     
     if (!formData.designFile) {
       setError('Please upload a design specification file');
