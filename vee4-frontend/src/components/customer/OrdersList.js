@@ -1,6 +1,6 @@
 // src/components/customer/OrdersList.js
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { orderService } from '../../services/api';
 import Card from '../ui/Card';
 import Button from '../ui/Button';
@@ -14,6 +14,7 @@ const OrdersList = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
   
   useEffect(() => {
     const fetchOrders = async () => {
@@ -54,7 +55,7 @@ const OrdersList = () => {
           action={
             <Button 
               variant="primary"
-              onClick={() => window.location.href = '/orders/new'}
+              onClick={() => navigate('/orders/new')}
             >
               Place New Order
             </Button>
