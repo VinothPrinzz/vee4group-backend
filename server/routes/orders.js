@@ -680,6 +680,17 @@ router.get('/:id/documents/:documentType', protect, async (req, res) => {
         message: 'Document not found',
       });
     }
+
+    // Check if this is a virtual memory-storage file
+    if (documentUrl.startsWith('memory-storage://')) {
+      // Generate dummy PDF content
+      res.setHeader('Content-Type', 'application/pdf');
+      res.setHeader('Content-Disposition', `attachment; filename=${documentType}-${order.orderNumber}.pdf`);
+      
+      // Send a dummy PDF message
+      res.send(Buffer.from(`This is a placeholder for ${documentType}. In production, this would be stored in a proper storage service.`));
+      return;
+    }
     
     // For local file system:
     // Extract the file path from the URL
