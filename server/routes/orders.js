@@ -450,21 +450,81 @@ router.get('/:id', protect, async (req, res) => {
   }
 });
 
-// @route   POST /api/v1/orders
-// @desc    Place a new order
-// @access  Private
+// // @route   POST /api/v1/orders
+// // @desc    Place a new order
+// // @access  Private
+// router.post('/', protect, upload.single('designFile'), async (req, res) => {
+//   try {
+//     const {
+//       productType,
+//       metalType,
+//       thickness,
+//       width,
+//       height,
+//       quantity,
+//       color,
+//       additionalRequirements,
+//     } = req.body;
+    
+//     // Check if file was uploaded
+//     if (!req.file) {
+//       return res.status(400).json({
+//         success: false,
+//         message: 'Please upload a design file',
+//       });
+//     }
+    
+//     // Create new order
+//     const order = await Order.create({
+//       customerId: req.user._id,
+//       productType,
+//       metalType,
+//       thickness,
+//       width,
+//       height,
+//       quantity,
+//       color,
+//       additionalRequirements,
+//       designFile: req.file.location, // URL from our middleware
+//     });
+    
+//     // Create a welcome message from admin
+//     await Message.create({
+//       orderId: order._id,
+//       senderId: req.user._id, // This will be replaced with an admin ID in a real system
+//       content: 'Thank you for your order. We are currently reviewing your specifications and will update you soon.',
+//     });
+    
+//     // Create a notification for admin
+//     // In a real system, you would have a designated admin ID
+//     // For now, we'll skip this step
+    
+//     res.status(201).json({
+//       success: true,
+//       order: {
+//         id: order._id,
+//         orderNumber: order.orderNumber,
+//         status: order.status,
+//         createdAt: order.createdAt,
+//       },
+//     });
+//   } catch (error) {
+//     res.status(400).json({
+//       success: false,
+//       message: error.message,
+//     });
+//   }
+// });
+
+//Modified the POST route
 router.post('/', protect, upload.single('designFile'), async (req, res) => {
   try {
-    const {
-      productType,
-      metalType,
-      thickness,
-      width,
-      height,
-      quantity,
-      color,
-      additionalRequirements,
-    } = req.body;
+    console.log("Request body:", Object.keys(req.body));
+    console.log("File received:", req.file ? {
+      originalname: req.file.originalname,
+      mimetype: req.file.mimetype,
+      size: req.file.size
+    } : "No file");
     
     // Check if file was uploaded
     if (!req.file) {
@@ -474,30 +534,35 @@ router.post('/', protect, upload.single('designFile'), async (req, res) => {
       });
     }
     
-    // Create new order
+    // Store file metadata (not actual file)
+    const fileDetails = {
+      name: req.file.originalname,
+      size: req.file.size,
+      type: req.file.mimetype,
+      uploadDate: new Date()
+    };
+    
+    // Create new order with virtual file reference
     const order = await Order.create({
       customerId: req.user._id,
-      productType,
-      metalType,
-      thickness,
-      width,
-      height,
-      quantity,
-      color,
-      additionalRequirements,
-      designFile: req.file.location, // URL from our middleware
+      productType: req.body.productType,
+      metalType: req.body.metalType,
+      thickness: req.body.thickness,
+      width: req.body.width,
+      height: req.body.height,
+      quantity: req.body.quantity,
+      color: req.body.color,
+      additionalRequirements: req.body.additionalRequirements,
+      // Store serialized file info instead of a real path
+      designFile: `memory-storage://${fileDetails.name}`,
     });
     
     // Create a welcome message from admin
     await Message.create({
       orderId: order._id,
-      senderId: req.user._id, // This will be replaced with an admin ID in a real system
+      senderId: req.user._id, 
       content: 'Thank you for your order. We are currently reviewing your specifications and will update you soon.',
     });
-    
-    // Create a notification for admin
-    // In a real system, you would have a designated admin ID
-    // For now, we'll skip this step
     
     res.status(201).json({
       success: true,
@@ -509,6 +574,7 @@ router.post('/', protect, upload.single('designFile'), async (req, res) => {
       },
     });
   } catch (error) {
+    console.error("Order creation error:", error);
     res.status(400).json({
       success: false,
       message: error.message,
