@@ -126,6 +126,38 @@ if (process.env.NODE_ENV === 'production') {
   });
 }
 
+// testing purpose
+app.get('/api/v1/test-filesystem', (req, res) => {
+  const testDir = path.join(__dirname, 'test-dir');
+  const testFile = path.join(testDir, 'test-file.txt');
+  
+  try {
+    // Try to create a directory
+    if (!fs.existsSync(testDir)) {
+      fs.mkdirSync(testDir, { recursive: true });
+    }
+    
+    // Try to write a file
+    fs.writeFileSync(testFile, 'Test content: ' + new Date().toISOString());
+    
+    // Try to read the file
+    const content = fs.readFileSync(testFile, 'utf8');
+    
+    res.json({
+      success: true,
+      message: 'Filesystem operations successful',
+      content: content
+    });
+  } catch (error) {
+    console.error('Filesystem test error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Filesystem operation failed',
+      error: error.message
+    });
+  }
+});
+
 // Error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);
